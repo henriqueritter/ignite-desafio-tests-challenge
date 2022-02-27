@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev --transpile-only --ignore-watch node_modules --respawn ./src/server.ts",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli",
-    "test": "jest"
+    "test": "JWT_SECRET=senhasupersecreta123 jest"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
