@@ -15,6 +15,7 @@ let showUserProfileUseCase: ShowUserProfileUseCase;
 
 describe("Show User Profile", () => {
   beforeEach(async () => {
+    //process.env = Object.assign(process.env, { JWT_SECRET: 'senhasupersecreta123' });
     usersRepository = new InMemoryUsersRepository();
     createUserUseCase = new CreateUserUseCase(usersRepository);
     authenticateUserUseCase = new AuthenticateUserUseCase(usersRepository);

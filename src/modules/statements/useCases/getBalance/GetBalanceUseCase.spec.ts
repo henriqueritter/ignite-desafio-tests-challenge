@@ -7,6 +7,7 @@ import { CreateStatementUseCase } from '../../useCases/createStatement/CreateSta
 import { GetBalanceUseCase } from './GetBalanceUseCase';
 
 import { v4 as uuid } from 'uuid'
+import { GetBalanceError } from './GetBalanceError';
 
 //cria variaveis para os useCases e repositorios
 let usersRepository: InMemoryUsersRepository;
@@ -25,6 +26,7 @@ enum OperationType {
 
 describe("Get Balance", () => {
   beforeEach(async () => {
+    //process.env = Object.assign(process.env, { JWT_SECRET: 'senhasupersecreta123' });
     //cria instancia dos repositorios
     usersRepository = new InMemoryUsersRepository();
     statementsRepository = new InMemoryStatementsRepository();
@@ -77,5 +79,13 @@ describe("Get Balance", () => {
 
     expect(balance.balance).toEqual(50);
     expect(balance.statement).toHaveLength(3);
+  });
+
+  it("Should not be able to get balance with user which does not exists", () => {
+    expect(async () => {
+      const userId = uuid();
+
+      await getBalanceUseCase.execute({ user_id: userId });
+    }).rejects.toBeInstanceOf(GetBalanceError);
   })
 })
