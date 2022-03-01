@@ -9,7 +9,7 @@ let usersRepository: InMemoryUsersRepository;
 import { ICreateUserDTO } from "../../dtos/ICreateUserDTO";
 
 describe("Create User", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     usersRepository = new InMemoryUsersRepository();
     createUserUseCase = new CreateUserUseCase(usersRepository);
   });
@@ -28,19 +28,21 @@ describe("Create User", () => {
   });
 
   it("Should not be able to create a new user with existing email", async () => {
-    expect(async () => {
+    //expect(async () => {
 
-      await createUserUseCase.execute({
-        name: "test",
-        email: "test@email.com",
-        password: "1234"
-      })
+    await createUserUseCase.execute({
+      name: "test",
+      email: "test@email.com",
+      password: "1234"
+    });
 
-      await createUserUseCase.execute({
-        name: "test",
-        email: "test@email.com",
-        password: "1234"
-      })
-    }).rejects.toBeInstanceOf(CreateUserError);
+    const response = await createUserUseCase.execute({
+      name: "test",
+      email: "test@email.com",
+      password: "1234"
+    });
+    console.log(response);
+    expect(response).toEqual("User already exists");
+    //}).rejects.toBeInstanceOf(CreateUserError);
   });
-})
+});
