@@ -1,7 +1,7 @@
 import { Statement } from "../../entities/Statement";
 import { ICreateStatementDTO } from "../../dtos/ICreateStatementDTO";
 import { IGetBalanceDTO } from "../../dtos/IGetBalanceDTO";
-import { IGetStatementOperationDTO } from "../../useCases/getStatementOperation/IGetStatementOperationDTO";
+import { IGetStatementOperationDTO } from "../../dtos/IGetStatementOperationDTO";
 import { IStatementsRepository } from "../IStatementsRepository";
 
 export class InMemoryStatementsRepository implements IStatementsRepository {
