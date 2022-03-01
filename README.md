@@ -2,6 +2,8 @@
 
 ## Desafio de Testes Unitários e Integrados com JEST
 
+<img src="https://github.com/henriqueritter/ignite-desafio-tests-challenge/blob/main/coverage_useCases.png" alt="Print Coverage Reports"></img>
+
 Para este desafio foram criados testes unitários e de integração na FinAPI.
 
 https://www.notion.so/Desafio-02-Testes-de-integra-o-70a8af48044d444cb1d2c1fa00056958
