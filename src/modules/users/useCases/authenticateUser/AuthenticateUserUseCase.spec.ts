@@ -33,8 +33,6 @@ describe("Authenticate User", () => {
 
   it("Should not be able to authenticate a user with incorrect email", async () => {
     expect(async () => {
-
-
       //create user login
       await createUserUseCase.execute({
         email: "admin@test.com",
@@ -46,6 +44,14 @@ describe("Authenticate User", () => {
         email: "incorrect@test.com",
         password: "1234"
       });
+    }).rejects.toBeInstanceOf(IncorrectEmailOrPasswordError);
+  });
+
+  it("Should not be able to authenticate with a not existing email", async () => {
+    expect(async () => {
+      await authenticateUserUseCase.execute({
+        email: "dontexist@email.com", password: "1234"
+      })
     }).rejects.toBeInstanceOf(IncorrectEmailOrPasswordError);
   });
 
