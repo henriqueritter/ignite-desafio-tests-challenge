@@ -6,6 +6,8 @@ import { CreateUserError } from './CreateUserError';
 let createUserUseCase: CreateUserUseCase;
 let usersRepository: InMemoryUsersRepository;
 
+import { ICreateUserDTO } from "./ICreateUserDTO";
+
 describe("Create User", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
@@ -13,11 +15,12 @@ describe("Create User", () => {
   });
 
   it("Should be able to create a new user", async () => {
-    const user = await createUserUseCase.execute({
+    const userData: ICreateUserDTO = {
       name: "test",
       email: "test@email.com",
       password: "1234"
-    })
+    };
+    const user = await createUserUseCase.execute(userData);
 
     expect(user).toHaveProperty("id");
     expect(user).toHaveProperty("email");
