@@ -6,7 +6,7 @@ import { CreateUserError } from './CreateUserError';
 let createUserUseCase: CreateUserUseCase;
 let usersRepository: InMemoryUsersRepository;
 
-import { ICreateUserDTO } from "./ICreateUserDTO";
+import { ICreateUserDTO } from "../../dtos/ICreateUserDTO";
 
 describe("Create User", () => {
   beforeEach(() => {
