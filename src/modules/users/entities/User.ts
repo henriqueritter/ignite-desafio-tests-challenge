@@ -26,6 +26,9 @@ export class User {
   @OneToMany(() => Statement, statement => statement.user)
   statement: Statement[];
 
+  @OneToMany(() => Statement, statement => statement.sender_id)
+  FKUserSenderStatements: Statement[];
+
   @CreateDateColumn()
   created_at: Date;
 
@@ -33,7 +36,7 @@ export class User {
   updated_at: Date;
 
   constructor() {
-    if(!this.id) {
+    if (!this.id) {
       this.id = uuid();
     }
   }

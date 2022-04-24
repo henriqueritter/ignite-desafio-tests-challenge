@@ -27,6 +27,10 @@ export class Statement {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @ManyToOne(() => User, user => user.FKUserSenderStatements)
+  @JoinColumn({ name: 'sender_id' })
+  sender_id: string;
+
   @Column()
   description: string;
 
