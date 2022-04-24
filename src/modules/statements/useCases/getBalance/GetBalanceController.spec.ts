@@ -29,22 +29,22 @@ describe("Get Balance Controller", () => {
     await request(app).post('/api/v1/statements/deposit').send({
       amount: 400, description: "First Deposit"
     }).set({
-      Authorization: `Bearer: ${token}`
+      Authorization: `Bearer ${token}`
     });
 
     await request(app).post('/api/v1/statements/withdraw').send({
       amount: 150, description: "First Withdraw"
     }).set({
-      Authorization: `Bearer: ${token}`
+      Authorization: `Bearer ${token}`
     });
 
     await request(app).post('/api/v1/statements/withdraw').send({
       amount: 150, description: "Second Withdraw"
     }).set({
-      Authorization: `Bearer: ${token}`
+      Authorization: `Bearer ${token}`
     });
     const response = await request(app).get('/api/v1/statements/balance').set({
-      Authorization: `Bearer: ${token}`
+      Authorization: `Bearer ${token}`
     });
 
     expect(response.status).toBe(200);
@@ -63,7 +63,7 @@ describe("Get Balance Controller", () => {
     const token = tokenResponse.body.token;
 
     const response = await request(app).get('/api/v1/statements/balance').set({
-      Authorization: `Bearer: ${token}`
+      Authorization: `Bearer ${token}`
     });
 
     expect(response.status).toBe(200);
@@ -72,9 +72,9 @@ describe("Get Balance Controller", () => {
   });
 
   it("Should not be able to get the balance without a invalid user token", async () => {
-    const fakeUserToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiMWQ5N2RmY2QtYWY4ZS00OWY5LTkxNWEtYjE5MzNhZjNhNDgwIiwibmFtZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkB0ZXN0LmNvbSIsInBhc3N3b3JkIjoiJDJhJDA4JHluVXNhZUFtZzhwTUVuUnczeTNOL2U3eWxCSDgzZzhoNXQuaDdUSGIua2NtMGoudUNyVzFtIiwiY3JlYXRlZF9hdCI6IjIwMjItMDItMjdUMTY6MjA6NTMuOTQ3WiIsInVwZGF0ZWRfYXQiOiIyMDIyLTAyLTI3VDE2OjIwOjUzLjk0N1oifSwiaWF0IjoxNjQ2MDgzOTc3LCJleHAiOjE2NDYxNzAzNzcsInN1YiI6IjFkOTdkZmNkLWFmOGUtNDlmOS05MTVhLWIxOTMzYWYzYTQ4MCJ9.usXj26LlRCP7-PSNbkyaHt9xP3bbpNmfeUi8gztBBcw";
+    const fakeUserToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiYTcxYzc4MGUtNDRkMC00OTVmLTk1NmEtY2I4MDQ0NTVmNGNmIiwibmFtZSI6InVzZXIiLCJlbWFpbCI6InVzZXJAdGVzdC5jb20iLCJwYXNzd29yZCI6IiQyYSQwOCRXaWZYV2d5VEFDSnd2Y0MvamhPdGwuOUFlUnVnZnguSndWVFRiSGN1TVBqQ05ndHRFMWVxLiIsImNyZWF0ZWRfYXQiOiIyMDIyLTA0LTI0VDE1OjQ3OjU4LjU3MVoiLCJ1cGRhdGVkX2F0IjoiMjAyMi0wNC0yNFQxNTo0Nzo1OC41NzFaIn0sImlhdCI6MTY1MDgwNDUyNCwiZXhwIjoxNjUwODkwOTI0LCJzdWIiOiJhNzFjNzgwZS00NGQwLTQ5NWYtOTU2YS1jYjgwNDQ1NWY0Y2YifQ.-ESlkZ-VyGwt_Jkc0DRoKeP8v7uxkigQusKlbFZNV1c";
     const response = await request(app).get('/api/v1/statements/balance').set({
-      Authorization: `Bearer: ${fakeUserToken}`
+      Authorization: `Bearer ${fakeUserToken}`
     });
 
     expect(response.status).toBe(404);

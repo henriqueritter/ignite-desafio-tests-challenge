@@ -40,13 +40,14 @@ describe("Create Statement Controller", () => {
   });
 
   it("Should not be able to create a new Statement with invalid user token", async () => {
-    const fakeUserToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiMWQ5N2RmY2QtYWY4ZS00OWY5LTkxNWEtYjE5MzNhZjNhNDgwIiwibmFtZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkB0ZXN0LmNvbSIsInBhc3N3b3JkIjoiJDJhJDA4JHluVXNhZUFtZzhwTUVuUnczeTNOL2U3eWxCSDgzZzhoNXQuaDdUSGIua2NtMGoudUNyVzFtIiwiY3JlYXRlZF9hdCI6IjIwMjItMDItMjdUMTY6MjA6NTMuOTQ3WiIsInVwZGF0ZWRfYXQiOiIyMDIyLTAyLTI3VDE2OjIwOjUzLjk0N1oifSwiaWF0IjoxNjQ2MDgzOTc3LCJleHAiOjE2NDYxNzAzNzcsInN1YiI6IjFkOTdkZmNkLWFmOGUtNDlmOS05MTVhLWIxOTMzYWYzYTQ4MCJ9.usXj26LlRCP7-PSNbkyaHt9xP3bbpNmfeUi8gztBBcw";
+    const fakeUserToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiZjI5MjMzYzAtMzdkNy00Mjk0LWEwYzUtYzUxNTBkNjM3NzZlIiwibmFtZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkB0ZXN0LmNvbSIsInBhc3N3b3JkIjoiJDJhJDA4JGFTbU9rY3JPOEYwTy9rVTdQUUFKRGVDNy9EbEpUYWpmR2VkckUwZUdXSUZnZEhiRFFpelo2IiwiY3JlYXRlZF9hdCI6IjIwMjItMDQtMjRUMTU6MzY6MzUuMzYyWiIsInVwZGF0ZWRfYXQiOiIyMDIyLTA0LTI0VDE1OjM2OjM1LjM2MloifSwiaWF0IjoxNjUwODAzNzk3LCJleHAiOjE2NTA4OTAxOTcsInN1YiI6ImYyOTIzM2MwLTM3ZDctNDI5NC1hMGM1LWM1MTUwZDYzNzc2ZSJ9.eBD6gQ2UuZkwU7tt12KwK6xwgm9XOQ-6sehFCLt__u4";
 
     const response = await request(app).post('/api/v1/statements/deposit').send({
       amount: 150, description: "Fake Deposit"
     }).set({
       Authorization: `Bearer ${fakeUserToken}`
     });
+
 
     expect(response.status).toBe(404);
     expect(response.body).toHaveProperty('message');
@@ -67,7 +68,7 @@ describe("Create Statement Controller", () => {
     const response = await request(app).post('/api/v1/statements/deposit').send({
       description: "Statement withou amount"
     }).set({
-      Authorization: `Bearer: ${userToken}`
+      Authorization: `Bearer ${userToken}`
     });
 
     expect(response.status).toBe(500);
@@ -105,7 +106,7 @@ describe("Create Statement Controller", () => {
     const response = await request(app).post('/api/v1/statements/withdraw').send({
       amount: 250, description: "First Withdraw"
     }).set({
-      Authorization: `Bearer: ${userToken}`
+      Authorization: `Bearer ${userToken}`
     });
 
     expect(response.status).toBe(201);
@@ -148,7 +149,7 @@ describe("Create Statement Controller", () => {
     const response = await request(app).post('/api/v1/statements/withdraw').send({
       amount: 150, description: "Insufficient funds Withdraw"
     }).set({
-      Authorization: `Bearer: ${tokenWithdraw}`
+      Authorization: `Bearer ${tokenWithdraw}`
     });
 
     expect(response.status).toBe(400);
