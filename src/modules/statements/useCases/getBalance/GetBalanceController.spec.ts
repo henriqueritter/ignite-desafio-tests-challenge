@@ -88,7 +88,6 @@ describe("Get Balance Controller", () => {
   });
 
   it("Should not be able to get the balance without a invalid user token", async () => {
-
     //gera token mockado
     await createUserUseCase.execute({
       email: "admin@test.com",
