@@ -27,9 +27,12 @@ export class Statement {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @Column('uuid')
+  sender_id?: string;
+
   @ManyToOne(() => User, user => user.FKUserSenderStatements)
   @JoinColumn({ name: 'sender_id' })
-  sender_id: string;
+  senderId: string;
 
   @Column()
   description: string;
