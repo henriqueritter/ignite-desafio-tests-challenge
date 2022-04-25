@@ -1,11 +1,25 @@
 import { createConnection, Connection } from 'typeorm';
 import { app } from '../../../../app';
 import request from 'supertest';
+import { InMemoryUsersRepository } from '../../../users/repositories/in-memory/InMemoryUsersRepository';
+import { AuthenticateUserUseCase } from '../../../users/useCases/authenticateUser/AuthenticateUserUseCase';
+import { CreateUserUseCase } from '../../../users/useCases/createUser/CreateUserUseCase';
 
 let connection: Connection;
 
+//para gerar um token falso mas no formato valido
+let usersRepository: InMemoryUsersRepository;
+let authenticateUserUseCase: AuthenticateUserUseCase;
+let createUserUseCase: CreateUserUseCase;
+
 
 describe("Get Statement Controller", () => {
+  beforeEach(() => {
+    usersRepository = new InMemoryUsersRepository();
+    createUserUseCase = new CreateUserUseCase(usersRepository);
+    authenticateUserUseCase = new AuthenticateUserUseCase(usersRepository);
+  });
+
   beforeAll(async () => {
     connection = await createConnection();
     await connection.runMigrations();
@@ -109,7 +123,17 @@ describe("Get Statement Controller", () => {
 
     const { id } = responseStatement.body;
 
-    const fakeUserToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiYTcxYzc4MGUtNDRkMC00OTVmLTk1NmEtY2I4MDQ0NTVmNGNmIiwibmFtZSI6InVzZXIiLCJlbWFpbCI6InVzZXJAdGVzdC5jb20iLCJwYXNzd29yZCI6IiQyYSQwOCRXaWZYV2d5VEFDSnd2Y0MvamhPdGwuOUFlUnVnZnguSndWVFRiSGN1TVBqQ05ndHRFMWVxLiIsImNyZWF0ZWRfYXQiOiIyMDIyLTA0LTI0VDE1OjQ3OjU4LjU3MVoiLCJ1cGRhdGVkX2F0IjoiMjAyMi0wNC0yNFQxNTo0Nzo1OC41NzFaIn0sImlhdCI6MTY1MDgwNDUyNCwiZXhwIjoxNjUwODkwOTI0LCJzdWIiOiJhNzFjNzgwZS00NGQwLTQ5NWYtOTU2YS1jYjgwNDQ1NWY0Y2YifQ.-ESlkZ-VyGwt_Jkc0DRoKeP8v7uxkigQusKlbFZNV1c";
+    //gera token mockado
+    await createUserUseCase.execute({
+      email: "admin@test.com",
+      name: "admin",
+      password: "1234"
+    });
+
+    const { token: fakeUserToken } = await authenticateUserUseCase.execute({
+      email: "admin@test.com",
+      password: "1234"
+    });
 
     const response = await request(app).get(`/api/v1/statements/${id}`).set({
       Authorization: `Bearer ${fakeUserToken}`

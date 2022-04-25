@@ -1,10 +1,22 @@
 import { app } from '../../../../app';
 import { Connection, createConnection } from 'typeorm';
 import request from 'supertest';
+import { InMemoryUsersRepository } from '../../../users/repositories/in-memory/InMemoryUsersRepository';
+import { AuthenticateUserUseCase } from '../../../users/useCases/authenticateUser/AuthenticateUserUseCase';
+import { CreateUserUseCase } from '../../../users/useCases/createUser/CreateUserUseCase';
 
 let connection: Connection;
 
+let usersRepository: InMemoryUsersRepository;
+let authenticateUserUseCase: AuthenticateUserUseCase;
+let createUserUseCase: CreateUserUseCase;
+
 describe("Create Statement Controller", () => {
+  beforeEach(() => {
+    usersRepository = new InMemoryUsersRepository();
+    createUserUseCase = new CreateUserUseCase(usersRepository);
+    authenticateUserUseCase = new AuthenticateUserUseCase(usersRepository);
+  })
   beforeAll(async () => {
     connection = await createConnection();
     await connection.runMigrations();
@@ -40,7 +52,16 @@ describe("Create Statement Controller", () => {
   });
 
   it("Should not be able to create a new Statement with invalid user token", async () => {
-    const fakeUserToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiZjI5MjMzYzAtMzdkNy00Mjk0LWEwYzUtYzUxNTBkNjM3NzZlIiwibmFtZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkB0ZXN0LmNvbSIsInBhc3N3b3JkIjoiJDJhJDA4JGFTbU9rY3JPOEYwTy9rVTdQUUFKRGVDNy9EbEpUYWpmR2VkckUwZUdXSUZnZEhiRFFpelo2IiwiY3JlYXRlZF9hdCI6IjIwMjItMDQtMjRUMTU6MzY6MzUuMzYyWiIsInVwZGF0ZWRfYXQiOiIyMDIyLTA0LTI0VDE1OjM2OjM1LjM2MloifSwiaWF0IjoxNjUwODAzNzk3LCJleHAiOjE2NTA4OTAxOTcsInN1YiI6ImYyOTIzM2MwLTM3ZDctNDI5NC1hMGM1LWM1MTUwZDYzNzc2ZSJ9.eBD6gQ2UuZkwU7tt12KwK6xwgm9XOQ-6sehFCLt__u4";
+    await createUserUseCase.execute({
+      email: "admin@test.com",
+      name: "admin",
+      password: "1234"
+    });
+
+    const { token: fakeUserToken } = await authenticateUserUseCase.execute({
+      email: "admin@test.com",
+      password: "1234"
+    });
 
     const response = await request(app).post('/api/v1/statements/deposit').send({
       amount: 150, description: "Fake Deposit"
