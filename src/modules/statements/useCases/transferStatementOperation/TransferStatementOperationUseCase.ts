@@ -1,17 +1,21 @@
 import { injectable } from "tsyringe";
+import { Statement } from "../../entities/Statement";
 
 
 interface IRequest {
-  recipient_id: string;
   sender_id: String;
+  recipient_id: string;
   amount: number;
   description: string;
-
 }
+
 @injectable()
-class TransferStatementOperationController {
+class TransferStatementOperationUseCase {
   constructor() { }
-  async execute() { }
+  async execute({ sender_id, recipient_id, amount, description }: IRequest): Promise<Statement> {
+    const statement = new Statement();
+    return statement;
+  }
 }
 
-export { TransferStatementOperationController }
+export { TransferStatementOperationUseCase }
