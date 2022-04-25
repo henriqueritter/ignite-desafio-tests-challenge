@@ -2,11 +2,7 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
 import { CreateStatementUseCase } from './CreateStatementUseCase';
-
-enum OperationType {
-  DEPOSIT = 'deposit',
-  WITHDRAW = 'withdraw',
-}
+import { OperationType } from '../../dtos/IOperationTypeDTO';
 
 export class CreateStatementController {
   async execute(request: Request, response: Response) {

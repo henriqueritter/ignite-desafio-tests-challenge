@@ -2,13 +2,15 @@ import { inject, injectable } from "tsyringe";
 import { IUsersRepository } from "../../../users/repositories/IUsersRepository";
 import { Statement } from "../../entities/Statement";
 import { IStatementsRepository } from "../../repositories/IStatementsRepository";
-
+import { TransferStatementOperationError } from "./TransferStatementOperationError";
+import { OperationType } from '../../dtos/IOperationTypeDTO'
 
 interface IRequest {
   sender_id: String;
   recipient_id: string;
   amount: number;
   description: string;
+  type: OperationType
 }
 
 @injectable()
@@ -21,19 +23,32 @@ class TransferStatementOperationUseCase {
     private statementsRepository: IStatementsRepository
   ) { }
 
-  async execute({ sender_id, recipient_id, amount, description }: IRequest): Promise<Statement> {
+  async execute({ sender_id, recipient_id, amount, description, type }: IRequest): Promise<Statement> {
     //verifica se o usuario que quer enviar existe
     //nao precisa pois ele ja é verificado no authenticated user
 
     // verifica se o usuario que vai receber existe
     const recipientUser = await this.usersRepository.findById(recipient_id);
-    //verifica se o usuario e possui saldo em conta
 
+    if (!recipientUser) {
+      throw new TransferStatementOperationError.RecipientUserNotFound();
+    }
+
+    //verifica se o usuario e possui saldo em conta
+    const { balance } = await this.statementsRepository.getUserBalance({ user_id: String(sender_id) });
+    if (amount > balance) {
+      throw new TransferStatementOperationError.InsufficientFunds();
+    }
 
     //efetua a operacao de criar um statement do tipo transfer
+    const statement = await this.statementsRepository.create({
+      user_id: recipient_id,
+      sender_id: String(sender_id),
+      amount,
+      description,
+      type
+    });
 
-
-    const statement = new Statement();
     return statement;
   }
 }

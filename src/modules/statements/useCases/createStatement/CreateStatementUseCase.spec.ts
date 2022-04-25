@@ -16,10 +16,7 @@ let createUserUseCase: CreateUserUseCase;
 let authenticateUserUseCase: AuthenticateUserUseCase;
 let createStatementeUseCase: CreateStatementUseCase;
 
-enum OperationType {
-  DEPOSIT = 'deposit',
-  WITHDRAW = 'withdraw',
-}
+import { OperationType } from '../../dtos/IOperationTypeDTO';
 
 describe("Create Statement", () => {
   beforeEach(() => {
