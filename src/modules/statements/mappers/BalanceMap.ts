@@ -32,8 +32,8 @@ export class BalanceMap {
       }
     ));*/
     const parsedStatement = statement.map(st => {
-      const stat = {
-        id: st.id,
+      const stat: IBalanceMap = {
+        id: st.id || "null",
         amount: Number(st.amount),
         description: st.description,
         type: st.type,

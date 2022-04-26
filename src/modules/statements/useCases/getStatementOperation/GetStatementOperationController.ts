@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
 import { GetStatementOperationUseCase } from './GetStatementOperationUseCase';
+import { GetStatementView } from '../../views/GetStatementView';
 
 export class GetStatementOperationController {
   async execute(request: Request, response: Response) {
@@ -15,6 +16,8 @@ export class GetStatementOperationController {
       statement_id
     });
 
-    return response.json(statementOperation);
+    const statementOperationDTO = GetStatementView.toDTO({ statement: statementOperation });
+
+    return response.json(statementOperationDTO);
   }
 }
