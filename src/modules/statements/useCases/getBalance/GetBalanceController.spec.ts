@@ -128,7 +128,7 @@ describe("Get Balance Controller", () => {
     });
 
     expect(response.status).toBe(200);
-    expect(response.body.statement.length).toBe(1);
+    expect(response.body.statement.length).toBe(2);
     expect(response.body.balance).toEqual(150);
   });
 
