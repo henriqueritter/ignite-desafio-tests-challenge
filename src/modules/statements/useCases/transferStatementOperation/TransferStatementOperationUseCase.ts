@@ -6,7 +6,7 @@ import { TransferStatementOperationError } from "./TransferStatementOperationErr
 import { OperationType } from '../../dtos/IOperationTypeDTO'
 
 interface IRequest {
-  sender_id: String;
+  sender_id: string;
   recipient_id: string;
   amount: number;
   description: string;
@@ -24,8 +24,7 @@ class TransferStatementOperationUseCase {
   ) { }
 
   async execute({ sender_id, recipient_id, amount, description, type }: IRequest): Promise<Statement> {
-    //verifica se o usuario que quer enviar existe
-    //nao precisa pois ele ja é verificado no authenticated user
+    //nao precisa validar o sender_id pois ele ja é verificado no authenticated user
 
     // verifica se o usuario que vai receber existe
     const recipientUser = await this.usersRepository.findById(recipient_id);
@@ -34,7 +33,7 @@ class TransferStatementOperationUseCase {
       throw new TransferStatementOperationError.RecipientUserNotFound();
     }
 
-    //verifica se o usuario e possui saldo em conta
+    //verifica se o usuario do sender_id e possui saldo em conta
     const { balance } = await this.statementsRepository.getUserBalance({ user_id: String(sender_id) });
     if (amount > balance) {
       throw new TransferStatementOperationError.InsufficientFunds();
