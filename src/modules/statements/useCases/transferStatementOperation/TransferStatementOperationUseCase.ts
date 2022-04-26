@@ -35,7 +35,8 @@ class TransferStatementOperationUseCase {
     }
 
     //verifica se o usuario do sender_id e possui saldo em conta
-    const { balance } = await this.statementsRepository.getUserBalance({ user_id: String(sender_id) });
+    const { balance } = await this.statementsRepository.getUserBalance({ user_id: sender_id });
+
     if (amount > balance) {
       throw new TransferStatementOperationError.InsufficientFunds();
     }
