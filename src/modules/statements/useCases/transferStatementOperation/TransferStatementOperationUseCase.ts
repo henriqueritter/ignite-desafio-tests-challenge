@@ -29,9 +29,11 @@ class TransferStatementOperationUseCase {
     // verifica se o usuario que vai receber existe
     const recipientUser = await this.usersRepository.findById(recipient_id);
 
+
     if (!recipientUser) {
       throw new TransferStatementOperationError.RecipientUserNotFound();
     }
+
 
     //verifica se o usuario do sender_id e possui saldo em conta
     const { balance } = await this.statementsRepository.getUserBalance({ user_id: String(sender_id) });

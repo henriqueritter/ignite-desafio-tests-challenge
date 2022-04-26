@@ -93,9 +93,7 @@ describe('Transfer Statement Operation', () => {
         sender_id: String(sender_id),
         type
       })
-    })
-
-
+    }).rejects.toBeInstanceOf(TransferStatementOperationError.InsufficientFunds);
   })
 
 })

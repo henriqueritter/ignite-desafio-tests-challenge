@@ -14,7 +14,7 @@ class TransferStatementOperationController {
 
     const statement = await transferStatementOperationUseCase.execute({ sender_id, recipient_id, amount, description, type });
 
-    return response.json(statement);
+    return response.status(201).json(statement);
   }
 }
 export { TransferStatementOperationController }

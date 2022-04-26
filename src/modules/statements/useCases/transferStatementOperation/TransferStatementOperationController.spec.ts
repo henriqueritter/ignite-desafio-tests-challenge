@@ -23,11 +23,16 @@ describe("Transfer Statement Controller", () => {
     });
 
     //cria usuario recipient
-    const responseRecipient = await request(app).post('/api/v1/users').send({
+    await request(app).post('/api/v1/users').send({
       email: 'recipient@test.com', name: 'recipient', password: '12345'
     });
 
-    const { recipient_id } = responseRecipient.body;
+    //recupera o id do recipient
+    const responseSessionRecipient = await request(app).post('/api/v1/sessions').send({
+      email: 'sender@test.com', password: '12345'
+    });
+
+    const { id: recipient_id } = responseSessionRecipient.body.user;
 
     //login/geratoken usuario sender
     const responseSessionSender = await request(app).post('/api/v1/sessions').send({
@@ -44,6 +49,8 @@ describe("Transfer Statement Controller", () => {
       Authorization: `Bearer ${token}`
     });
     //faz transferencia do sender para o recipient
+
+
     const responseTransfer = await request(app).post(`/api/v1/statements/transfers/${recipient_id}`).send({
       amount: 100,
       description: 'Test Transfer'
