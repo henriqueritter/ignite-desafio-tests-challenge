@@ -87,6 +87,51 @@ describe("Get Balance Controller", () => {
     expect(response.body.balance).toEqual(0);
   });
 
+  it("Should be able to get the updated account balance after a transfer statement", async () => {
+    //cria o usuario e o auth token
+    await request(app).post('/api/v1/users').send({
+      email: "sender@test.com", name: "user", password: "1234"
+    });
+
+    const tokenResponse = await request(app).post('/api/v1/sessions').send({
+      email: "sender@test.com", password: "1234"
+    });
+    const token = tokenResponse.body.token;
+    //realiza um deposito para ter saldo na conta
+    await request(app).post('/api/v1/statements/deposit').send({
+      amount: 400, description: "First Deposit"
+    }).set({
+      Authorization: `Bearer ${token}`
+    });
+
+    //cria o usuario que vai receber
+    await request(app).post('/api/v1/users').send({
+      email: "recipient@test.com", name: "user", password: "1234"
+    });
+
+    const recipientUserSessionResponse = await request(app).post('/api/v1/sessions').send({
+      email: "recipient@test.com", password: "1234"
+    });
+    const { id: recipient_id } = recipientUserSessionResponse.body.user;
+
+    //realiza a transferencia
+    await request(app).post(`/api/v1/statements/transfers/${recipient_id}`).send({
+      amount: 250,
+      description: "Transfer to Test"
+    }).set({
+      Authorization: `Bearer ${token}`
+    });
+
+    //pega o balance da conta e verifica se a transferencia  foi feita
+    const response = await request(app).get('/api/v1/statements/balance').set({
+      Authorization: `Bearer ${token}`
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body.statement.length).toBe(2);
+    expect(response.body.balance).toEqual(150);
+  });
+
   it("Should not be able to get the balance without a invalid user token", async () => {
     //gera token mockado
     await createUserUseCase.execute({

@@ -91,14 +91,14 @@ describe("Transfer Statement Controller", () => {
   it("should not be able to create a transfer when the funds are insufficient.", async () => {
     //login/geratoken usuario sender
     const responseSessionSender = await request(app).post('/api/v1/sessions').send({
-      email: 'recipient@test.com', password: '12345'
+      email: 'sender@test.com', password: '12345'
     });
 
     const { token } = responseSessionSender.body;
 
     //recupera o id do recipient
     const responseSessionRecipient = await request(app).post('/api/v1/sessions').send({
-      email: 'sender@test.com', password: '12345'
+      email: 'recipient@test.com', password: '12345'
     });
 
     const { id: recipient_id } = responseSessionRecipient.body.user;

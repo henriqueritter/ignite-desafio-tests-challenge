@@ -42,7 +42,7 @@ describe("Get Statement Controller", () => {
     const token = userToken.body.token;
 
     const responseStatement = await request(app).post('/api/v1/statements/deposit').send({
-      amount: 300.00, description: "Deposit Statement"
+      amount: 300.15, description: "Deposit Statement"
     }).set({
       Authorization: `Bearer ${token}`
     });
@@ -61,7 +61,7 @@ describe("Get Statement Controller", () => {
     expect(response.body).toHaveProperty('created_at');
     expect(response.body).toHaveProperty('updated_at');
     expect(response.body.id).toEqual(id);
-    expect(response.body.amount).toEqual('300.00');
+    expect(response.body.amount).toEqual(300.15);
     expect(response.body.description).toEqual(description);
     expect(response.body.type).toEqual(type);
     expect(response.body.created_at).toEqual(created_at);
