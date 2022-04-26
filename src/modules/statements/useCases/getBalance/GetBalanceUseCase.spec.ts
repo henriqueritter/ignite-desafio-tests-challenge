@@ -19,10 +19,7 @@ let createStatementUseCase: CreateStatementUseCase;
 let getBalanceUseCase: GetBalanceUseCase;
 
 
-enum OperationType {
-  DEPOSIT = 'deposit',
-  WITHDRAW = 'withdraw',
-}
+import { OperationType } from '../../dtos/IOperationTypeDTO';
 
 describe("Get Balance", () => {
   beforeEach(async () => {

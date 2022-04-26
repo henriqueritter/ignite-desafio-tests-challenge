@@ -10,10 +10,7 @@ import { v4 as uuid } from 'uuid';
 
 import { User } from '../../users/entities/User';
 
-enum OperationType {
-  DEPOSIT = 'deposit',
-  WITHDRAW = 'withdraw',
-}
+import { OperationType } from '../dtos/IOperationTypeDTO';
 
 @Entity('statements')
 export class Statement {
@@ -27,9 +24,12 @@ export class Statement {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @Column('uuid')
+  sender_id?: string;
+
   @ManyToOne(() => User, user => user.FKUserSenderStatements)
   @JoinColumn({ name: 'sender_id' })
-  sender_id: string;
+  senderId: string;
 
   @Column()
   description: string;

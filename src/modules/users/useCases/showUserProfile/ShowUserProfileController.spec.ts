@@ -1,10 +1,24 @@
 import request from 'supertest';
 import { app } from '../../../../app';
 import { createConnection, Connection } from 'typeorm';
+import { CreateUserUseCase } from '../createUser/CreateUserUseCase';
+import { AuthenticateUserUseCase } from '../authenticateUser/AuthenticateUserUseCase';
+import { InMemoryUsersRepository } from '../../repositories/in-memory/InMemoryUsersRepository';
 
 let connection: Connection;
 
+
+let usersRepository: InMemoryUsersRepository;
+let authenticateUserUseCase: AuthenticateUserUseCase;
+let createUserUseCase: CreateUserUseCase;
+
 describe("Show User Profile Controller", () => {
+  beforeEach(() => {
+    usersRepository = new InMemoryUsersRepository();
+    createUserUseCase = new CreateUserUseCase(usersRepository);
+    authenticateUserUseCase = new AuthenticateUserUseCase(usersRepository);
+  });
+
   beforeAll(async () => {
     connection = await createConnection();
     await connection.runMigrations();
@@ -60,14 +74,18 @@ describe("Show User Profile Controller", () => {
       name: "admin", email: "admin@test.com", password: "1234"
     });
 
+    const expiredToken = await request(app).post('/api/v1/sessions').send({
+      email: "admin@test.com", password: "1234"
+    });
+
+    //renova o token para expirar o antigo
     await request(app).post('/api/v1/sessions').send({
       email: "admin@test.com", password: "1234"
     });
 
-    const fakeToken = "eyJhbGciOiJIUaI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiMWQ5N2RmY2QtYWY4ZS00OWY5LTkxNWEtYjE5MzNhZjNhNDgwIiwibmFtZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkB0ZXN0LmNvbSIsInBhc3N3b3JkIjoiJDJhJDA4JHluVXNhZUFtZzhwTUVuUnczeTNOL2U3eWxCSDgzZzhoNXQuaDdUSGIua2NtMGoudUNyVzFtIiwiY3JlYXRlZF9hdCI6IjIwMjItMDItMjdUMTY6MjA6NTMuOTQ3WiIsInVwZGF0ZWRfYXQiOiIyMDIyLTAyLTI3VDE2OjIwOjUzLjk0N1oifSwiaWF0IjoxNjQ2MDgzOTc3LCJleHAiOjE2NDYxNzAzNzcsInN1YiI6IjFkOTdkZmNkLWFmOGUtNDlmOS05MTVhLWIxOTMzYWYzYTQ4MCJ9.usXj26LlRCP7-PSNbkyaHt9xP3bbpNmfeUi8gztBBcw"
 
     const response = await request(app).get('/api/v1/profile').set({
-      Authorization: `Bearer ${fakeToken}`
+      Authorization: `Bearer ${expiredToken}`
     });
 
     expect(response.status).toBe(401);
@@ -84,10 +102,21 @@ describe("Show User Profile Controller", () => {
       email: "admin@test.com", password: "1234"
     });
 
-    const fakeToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiYTcxYzc4MGUtNDRkMC00OTVmLTk1NmEtY2I4MDQ0NTVmNGNmIiwibmFtZSI6InVzZXIiLCJlbWFpbCI6InVzZXJAdGVzdC5jb20iLCJwYXNzd29yZCI6IiQyYSQwOCRXaWZYV2d5VEFDSnd2Y0MvamhPdGwuOUFlUnVnZnguSndWVFRiSGN1TVBqQ05ndHRFMWVxLiIsImNyZWF0ZWRfYXQiOiIyMDIyLTA0LTI0VDE1OjQ3OjU4LjU3MVoiLCJ1cGRhdGVkX2F0IjoiMjAyMi0wNC0yNFQxNTo0Nzo1OC41NzFaIn0sImlhdCI6MTY1MDgwNDUyNCwiZXhwIjoxNjUwODkwOTI0LCJzdWIiOiJhNzFjNzgwZS00NGQwLTQ5NWYtOTU2YS1jYjgwNDQ1NWY0Y2YifQ.-ESlkZ-VyGwt_Jkc0DRoKeP8v7uxkigQusKlbFZNV1c"
+    //gera token mockado
+    await createUserUseCase.execute({
+      email: "admin@test.com",
+      name: "admin",
+      password: "1234"
+    });
+
+    const { token: fakeUserToken } = await authenticateUserUseCase.execute({
+      email: "admin@test.com",
+      password: "1234"
+    });
+
 
     const response = await request(app).get('/api/v1/profile').set({
-      Authorization: `Bearer ${fakeToken}`
+      Authorization: `Bearer ${fakeUserToken}`
     });
 
     expect(response.status).toBe(404);
